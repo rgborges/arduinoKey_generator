@@ -1,0 +1,205 @@
+/* This is key guard and generator program based on arduino
+ the programa guard your keys safe. Its usable
+ for code recuperations, and criation of new strongs keys.
+
+ rafael430g@gmail.com
+ RAFAEL BORGES BATISTA
+ */
+ 
+String user;
+String ipi = "arduino/";
+String ip = ipi + user;
+char key_1[] = "12345678";
+int sizeBufferMax = 8;
+int setp = 0;
+int errorKeyTry = 0;
+char key2[] = "qwertyuip120125dfggfh4545212"; 
+char key3[] = "thisiskeyguard";
+// functions
+boolean strcmp(char i[], char j[]);
+void generateKey1();
+
+void setup() 
+{
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  Serial.flush();
+  Serial.print("        Welcome to arduino KeyGenerator            \n");
+  Serial.print("this is a serial key generator  BETA v1.0         \n");
+  Serial.println("Free software lisense     2015  by Rafael Borges Batista \n"); 
+  Serial.print("digite o token para a sincronizacao:");
+  pinMode( 13, OUTPUT);
+  randomSeed(analogRead(A0));
+}
+void loop() 
+{
+  while(Serial.available() > 0) 
+  {
+    digitalWrite( 13, 1);
+    char buffer[sizeBufferMax];
+    int sizeOfBuffer = Serial.readBytesUntil('\0',buffer,sizeBufferMax);
+    if ( sizeOfBuffer > 8)
+    {
+      Serial.println("error, core dumped, please clean the serial port");
+
+    }
+    for(int i = 0; i < sizeBufferMax ; i++)
+    {
+      Serial.print(buffer[i]);
+
+    }
+    Serial.print("                ");
+    // Serial.println(temp, DEC);
+    //byte index = buffer[sizeBufferMax];
+    //Serial.println(index);
+    while(setp == 0)
+    {
+
+      if(strcmp(buffer,key_1) == 1)
+      {
+        Serial.println("chave aceita");
+        Serial.flush(); 
+        setp++;
+        break;
+
+      }
+      else
+      {
+        Serial.println("chave invalida");
+        Serial.println(" ");
+        Serial.print("you have write the wrong key, please restart the comunication SPP");
+        digitalWrite(13, 0);
+        Serial.end();
+        int errorKeyTry = 1; 
+        break;
+       
+
+      }
+
+    }
+    if(setp == 1 && errorKeyTry == 0)
+    {
+      Serial.println("Bem vindo ao sistema token de seguranca da Borges Solutions");
+      Serial.println("Aqui estarao guardadas ( chaves ) restritas necessarias para");
+      Serial.println("a recuperacao de dados e produtos oferecidos pela empresa. \n\n  ");
+      Serial.print("voce tem: 2");
+      Serial.println(" chaves");
+      Serial.println(ip);
+      Serial.print("Chave 1:");
+      Serial.println(key2);
+      Serial.print("Chave 2:");
+      Serial.println(key3);
+      Serial.flush(); 
+      setp++;
+      Serial.println("the system will generate one key");
+      Serial.println("generating...");
+      Serial.print("Key generated:");
+      generateKey();
+      digitalWrite(13, 0);
+      Serial.end();
+
+    }
+    else{
+      Serial.end(); 
+    }
+
+  }
+  if(Serial1.available() > 0)
+  {
+    Serial1.println("bluetooth");
+    generateKey1();
+    
+  }
+
+}
+boolean strcmp(char x[], char y[])
+{
+   //compare two 8 bits charactere array
+  int pointer[sizeBufferMax];
+  for(int i = 0; i < sizeBufferMax ; i++)
+  {
+    if(x[i] == y[i])
+    {
+      pointer[i] = 1;
+    }
+    else
+    {
+      pointer[i] = 0; 
+    }
+  }
+
+  int rp = pointer[0]*pointer[1]*pointer[2]*pointer[3]*pointer[4]*pointer[5]*pointer[6]*pointer[7];
+
+  if( rp == 0)
+  {
+    return 0;
+  }
+  if( rp == 1)
+  {
+    return 1;
+  }
+}
+
+
+void generateKey()
+{
+  char ci[16];
+  char ch1;
+  int randkey = random(0, 100);
+  int firstchar = random(0,26);
+  for(int l = 0; l < 3; l++)
+  {
+    ch1 = ((firstchar)%26) + 65;
+    Serial.print(ch1);
+        for(int j = 0; j < 16; j++)
+        {
+        int randNumber = random(0 , 26);
+        ci [j] = ((randNumber+randkey)%26)+ 97;
+        Serial.print(ci[j]);
+        }
+       if(l = 2)
+       {
+         Serial.print("-"); 
+       }
+        
+  } 
+  Serial.print(".");
+  unsigned int numberKey = random(127, 1896547);
+  Serial.print(numberKey);
+  Serial.println(" ");
+}
+
+void generateKey1()
+{
+  char ci[16];
+  char ch1;
+  int randkey = random(0, 100);
+  int firstchar = random(0,26);
+  for(int l = 0; l < 3; l++)
+  {
+    ch1 = ((firstchar)%26) + 65;
+    Serial1.print(ch1);
+        for(int j = 0; j < 16; j++)
+        {
+        int randNumber = random(0 , 26);
+        ci [j] = ((randNumber+randkey)%26)+ 97;
+        Serial1.print(ci[j]);
+        }
+       if(l = 2)
+       {
+         Serial1.print("-"); 
+       }
+        
+  } 
+  Serial1.print(".");
+  unsigned int numberKey = random(127, 1896547);
+  Serial1.print(numberKey);
+  Serial1.println(" ");
+}
+
+
+
+
+
+
+
